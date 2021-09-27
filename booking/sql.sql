@@ -310,4 +310,17 @@ FROM comments c
   INNER JOIN countries cs ON css.country_id = cs.id
   INNER JOIN users u ON c.user_id = u.id
 WHERE c.hotel_id = 1
-ORDER BY c.created_at DESC
+ORDER BY c.created_at DESC;
+
+SELECT c.description, h.name
+FROM hotels h
+  LEFT JOIN comments c ON h.id = c.hotel_id
+WHERE hotel_id = 1;
+
+
+-- Фотографии отеля
+SELECT hp.value, h.name
+FROM hotels h
+  LEFT JOIN hotel_photos hp ON h.id = hp.hotel_id
+WHERE hotel_id = 1;
+
