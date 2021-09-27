@@ -108,141 +108,31 @@ ALTER TABLE profiles ADD CONSTRAINT profiles_city_id FOREIGN KEY (city_id) REFER
 ALTER TABLE profiles ADD CONSTRAINT profiles_status_id FOREIGN KEY (status_id) REFERENCES profile_statuses(id);
 
 
-
-
-
-
-
-
-
-
-
-
 DROP TABLE IF EXISTS hotel_types;
 CREATE TABLE hotel_types (
-  id INTEGER AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL
+  id INTEGER AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор строки',
+  name VARCHAR(100) NOT NULL  COMMENT 'Название'
 );
 
 DROP TABLE IF EXISTS hotels;
 CREATE TABLE hotels (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  description TEXT NOT NULL,
-  type_id INTEGER NOT NULL,
-  cost DECIMAL NOT NULL,
-  created_at DATETIME DEFAULT NOW(),
-  updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор строки',
+  name VARCHAR(100) NOT NULL COMMENT 'Идентификатор строки',
+  description TEXT NOT NULL COMMENT 'Описание',
+  type_id INTEGER NOT NULL COMMENT 'Идентификатор типа',
+  cost DECIMAL NOT NULL COMMENT 'Стоимость за сутки',
+  created_at DATETIME DEFAULT NOW() COMMENT 'Время создания строки',
+  updated_at DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP COMMENT 'Время обновления строки'
 );
 ALTER TABLE hotels ADD CONSTRAINT hotel_type_id_type_id FOREIGN KEY (type_id) REFERENCES hotel_types(id);
 
-
 DROP TABLE IF EXISTS comments;
 CREATE TABLE comments (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  hotel_id BIGINT NOT NULL ,
-  user_id BIGINT NOT NULL ,
-  description TEXT NOT NULL,
-  created_at DATETIME DEFAULT NOW(),
-  updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор строки',
+  hotel_id BIGINT NOT NULL COMMENT 'Идентификатор строки',
+  user_id BIGINT NOT NULL COMMENT 'Идентификатор строки',
+  description TEXT NOT NULL COMMENT 'Идентификатор строки',
+  created_at DATETIME DEFAULT NOW() COMMENT 'Время создания строки',
+  updated_at DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP COMMENT 'Время обновления строки'
 );
 ALTER TABLE comments ADD CONSTRAINT comments_user_id FOREIGN KEY (user_id) REFERENCES users(id);
-
-
-DROP TABLE IF EXISTS order_statuses;
-CREATE TABLE order_statuses (
-  id INTEGER AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR (255) not null
-);
-
-DROP TABLE IF EXISTS orders;
-CREATE TABLE orders (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  hotel_id BIGINT NOT NULL,
-  user_id BIGINT NOT NULL,
-  status_id INTEGER NOT NULL,
-  date_from DATE,
-  date_to DATE,
-  comment TEXT,
-  created_at DATETIME DEFAULT NOW(),
-  updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
-);
-ALTER TABLE orders ADD CONSTRAINT orders_hotel_id FOREIGN KEY (hotel_id) REFERENCES hotels(id);
-ALTER TABLE orders ADD CONSTRAINT orders_user_id FOREIGN KEY (user_id) REFERENCES users(id);
-ALTER TABLE orders ADD CONSTRAINT orders_status_id FOREIGN KEY (status_id) REFERENCES order_statuses(id);
-
-
-
-
-
-
-DROP TABLE IF EXISTS hotel_types;
-CREATE TABLE hotel_types (
-  id int AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL
-);
----------------------------
-DROP TABLE IF EXISTS hotels;
-CREATE TABLE hotels (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  description TEXT NOT NULL,
-  type_id int NOT NULL,
-  cost int NOT NULL,
-  created_at DATETIME DEFAULT NOW(),
-  updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
-);
-ALTER TABLE hotels ADD CONSTRAINT hotels_type_id_r FOREIGN KEY (type_id) REFERENCES hotel_types(id);
--------------------------------
-DROP TABLE IF EXISTS hotel_types;
-CREATE TABLE hotel_types (
-  id INTEGER AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL
-);
----------------------------
-DROP TABLE IF EXISTS hotels;
-CREATE TABLE hotels (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  user_id BIGINT NOT NULL ,
-  name VARCHAR(100) NOT NULL,
-  description TEXT NOT NULL,
-  type_id int NOT NULL,
-  created_at DATETIME DEFAULT NOW(),
-  updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
-);
-ALTER TABLE hotels ADD CONSTRAINT hotels_type_id_r FOREIGN KEY (type_id) REFERENCES hotel_types(id);
-
----------------------------
-DROP TABLE IF EXISTS comments;
-CREATE TABLE comments (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  hotel_id BIGINT NOT NULL ,
-  user_id BIGINT NOT NULL ,
-  description TEXT NOT NULL,
-  created_at DATETIME DEFAULT NOW(),
-  updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
-);
-ALTER TABLE comments ADD CONSTRAINT comments_user_id FOREIGN KEY (user_id) REFERENCES users(id);
----------------------------
-DROP TABLE IF EXISTS order_statuses;
-CREATE TABLE order_statuses (
-  id INTEGER AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR (255) not null
-);
----------------------------
-DROP TABLE IF EXISTS orders;
-CREATE TABLE orders (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  hotel_id BIGINT NOT NULL,
-  user_id BIGINT NOT NULL,
-  status_id INTEGER NOT NULL,
-  date_from DATE,
-  date_to DATE,
-  comment TEXT,
-  created_at DATETIME DEFAULT NOW(),
-  updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
-);
-ALTER TABLE orders ADD CONSTRAINT orders_hotel_id FOREIGN KEY (hotel_id) REFERENCES hotels(id);
-ALTER TABLE orders ADD CONSTRAINT orders_user_id FOREIGN KEY (user_id) REFERENCES users(id);
-ALTER TABLE orders ADD CONSTRAINT orders_status_id FOREIGN KEY (user_id) REFERENCES order_statuses(id);
----------------------------
