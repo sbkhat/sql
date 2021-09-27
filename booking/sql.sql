@@ -224,4 +224,90 @@ SELECT u.id, count(1)
 FROM users u
   INNER JOIN profiles p ON u.id = p.user_id
 GROUP BY u.id
-HAVING count(p.user_id) > 1
+HAVING count(p.user_id) > 1;
+
+-- SQL запросы по отелям
+
+-- Количество отелей по типу
+SELECT count(1) count, ht.name
+FROM hotels h
+  INNER JOIN hotel_types ht ON h.type_id = ht.id
+GROUP BY ht.name;
+
+-- Количество акивных отелей по типу
+SELECT count(1) count, ht.name, hs.name
+FROM hotels h
+  INNER JOIN hotel_types ht ON h.type_id = ht.id
+  INNER JOIN hotel_statuses hs ON h.status_id = hs.id
+GROUP BY ht.name, hs.name;
+
+SELECT count(1) count,
+       (
+         select name
+         from hotel_types
+         where id = h.type_id
+       ) type,
+       (
+         select name
+         from hotel_statuses
+         where id = h.status_id
+       ) status
+FROM hotels h
+GROUP BY h.status_id, h.type_id
+ORDER BY h.status_id DESC;
+
+
+-- количество отелей по городам
+SELECT c.name, count(1) count
+FROM hotels h
+  INNER JOIN hotel_types as ht ON h.type_id = ht.id
+  INNER JOIN hotel_statuses as hs ON h.status_id = hs.id
+  INNER JOIN cities c ON h.city_id = c.id
+  INNER JOIN regions r ON c.region_id = r.id
+  INNER JOIN countries cs ON c.country_id = cs.id
+GROUP BY c.name;
+
+-- количество отелей по регионам
+SELECT r.name, count(1) count
+FROM hotels h
+  INNER JOIN hotel_types as ht ON h.type_id = ht.id
+  INNER JOIN hotel_statuses as hs ON h.status_id = hs.id
+  INNER JOIN cities c ON h.city_id = c.id
+  INNER JOIN regions r ON c.region_id = r.id
+  INNER JOIN countries cs ON c.country_id = cs.id
+GROUP BY r.name;
+
+-- количество отелей по странам
+SELECT cs.name, count(1) count
+FROM hotels h
+  INNER JOIN hotel_types as ht ON h.type_id = ht.id
+  INNER JOIN hotel_statuses as hs ON h.status_id = hs.id
+  INNER JOIN cities c ON h.city_id = c.id
+  INNER JOIN regions r ON c.region_id = r.id
+  INNER JOIN countries cs ON c.country_id = cs.id
+GROUP BY cs.name;
+
+
+-- самый максимальную и минимальную стоимость отелей по типу и годам
+SELECT cs.name, ht.name, MAX(h.cost) min, MIN(h.cost) max, YEAR(h.created_at)
+FROM hotels h
+  INNER JOIN hotel_types as ht ON h.type_id = ht.id
+  INNER JOIN hotel_statuses as hs ON h.status_id = hs.id
+  INNER JOIN cities c ON h.city_id = c.id
+  INNER JOIN regions r ON c.region_id = r.id
+  INNER JOIN countries cs ON c.country_id = cs.id
+GROUP BY YEAR(h.created_at), cs.name, ht.name
+ORDER BY YEAR(h.created_at) DESC, cs.id ASC, ht.name DESC;
+
+-- Список комментарияе у отела
+SELECT c.description, u.login, c.created_at
+FROM comments c
+  INNER JOIN hotels h ON h.id = c.hotel_id
+  INNER JOIN hotel_types as ht ON h.type_id = ht.id
+  INNER JOIN hotel_statuses as hs ON h.status_id = hs.id
+  INNER JOIN cities as css ON h.city_id = css.id
+  INNER JOIN regions r ON css.region_id = r.id
+  INNER JOIN countries cs ON css.country_id = cs.id
+  INNER JOIN users u ON c.user_id = u.id
+WHERE c.hotel_id = 1
+ORDER BY c.created_at DESC

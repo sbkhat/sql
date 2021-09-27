@@ -114,6 +114,12 @@ CREATE TABLE hotel_types (
   name VARCHAR(100) NOT NULL  COMMENT 'Название'
 );
 
+DROP TABLE IF EXISTS hotel_statuses;
+CREATE TABLE hotel_statuses (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор строки',
+  name VARCHAR(100) NOT NULL  COMMENT 'Название'
+);
+
 DROP TABLE IF EXISTS hotels;
 CREATE TABLE hotels (
   id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор строки',
@@ -121,10 +127,16 @@ CREATE TABLE hotels (
   description TEXT NOT NULL COMMENT 'Описание',
   type_id INTEGER NOT NULL COMMENT 'Идентификатор типа',
   cost DECIMAL NOT NULL COMMENT 'Стоимость за сутки',
+  city_id BIGINT NOT NULL COMMENT 'Идентификатор Города',
+  user_id INTEGER NOT NULL COMMENT 'Идентификатор польователя',
+  address TEXT NOT NULL COMMENT 'Адрес',
+  status_id INTEGER NOT NULL COMMENT 'Идентификатор статуса',
   created_at DATETIME DEFAULT NOW() COMMENT 'Время создания строки',
   updated_at DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP COMMENT 'Время обновления строки'
 );
-ALTER TABLE hotels ADD CONSTRAINT hotel_type_id_type_id FOREIGN KEY (type_id) REFERENCES hotel_types(id);
+ALTER TABLE hotels ADD CONSTRAINT hotel_type_id FOREIGN KEY (type_id) REFERENCES hotel_types(id);
+ALTER TABLE hotels ADD CONSTRAINT hotel_status_id FOREIGN KEY (status_id) REFERENCES hotel_statuses(id);
+ALTER TABLE hotels ADD CONSTRAINT hotel_user_id FOREIGN KEY (user_id) REFERENCES users(id);
 
 DROP TABLE IF EXISTS comments;
 CREATE TABLE comments (
@@ -136,3 +148,13 @@ CREATE TABLE comments (
   updated_at DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP COMMENT 'Время обновления строки'
 );
 ALTER TABLE comments ADD CONSTRAINT comments_user_id FOREIGN KEY (user_id) REFERENCES users(id);
+
+DROP TABLE IF EXISTS hotel_photos;
+CREATE TABLE hotel_photos (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор строки',
+  hotel_id BIGINT NOT NULL COMMENT 'Идентификатор отеля',
+  value VARCHAR(255) NOT NULL COMMENT 'Ссылка на изображения',
+  created_at DATETIME DEFAULT NOW() COMMENT 'Время создания строки',
+  updated_at DATETIME DEFAULT NOW() ON UPDATE NOW() COMMENT 'Время обновления строки'
+);
+ALTER TABLE hotel_photos ADD CONSTRAINT hotel_photos_hotel_id FOREIGN KEY (hotel_id) REFERENCES hotels(id);
