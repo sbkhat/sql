@@ -1,4 +1,4 @@
--- SQL запросы по пользователям
+-- SQL ЗАПРОСЫ СВЯЗАННЫЕ С ПОЛЬЗОВАТЕЛЯМИ
 
 -- Вывод пользователей для постраничной навигации
 SELECT u.id as user_id, u.login, upn.value as phone, uph.value as photo_src
@@ -118,16 +118,80 @@ GROUP BY
   END
 ORDER BY age ASC;
 
--- Колличество пользователей от 30 до 50 лет
+DROP FUNCTION IF EXISTS get_age;
+CREATE FUNCTION  get_age (birthday DATETIME)
+  RETURNS INTEGER DETERMINISTIC
+  BEGIN
+    RETURN (YEAR(CURRENT_DATE)-YEAR(birthday))-(RIGHT(CURRENT_DATE,5) < RIGHT(birthday,5));
+  END;
+
+DROP FUNCTION IF EXISTS get_age_text;
+CREATE FUNCTION  get_age_text (birthday DATETIME)
+  RETURNS VARCHAR(255) DETERMINISTIC
+  BEGIN
+    DECLARE age INT;
+    SET age = get_age(birthday);
+    RETURN CASE
+           WHEN age <= 10 THEN 'возраст от 0 до 10'
+           WHEN age <= 20 THEN 'возраст от 10 до 20'
+           WHEN age <= 30 THEN 'возраст от 20 до 30'
+           WHEN age <= 40 THEN 'возраст от 30 до 40'
+           WHEN age <= 50 THEN 'возраст от 40 до 50'
+           WHEN age > 50 THEN  'возраст старше 50'
+           END;
+  END;
+
 SELECT
   count(1) as count,
-  (YEAR(CURRENT_DATE)-YEAR(p.birthday))-(RIGHT(CURRENT_DATE,5) < RIGHT(p.birthday,5)) as age,
+  (get_age_text(p.birthday)) as age_rate
+FROM users u
+  INNER JOIN profiles p ON p.user_id = u.id
+GROUP BY
+  CASE
+  WHEN get_age(birthday) < 10 THEN 1
+  WHEN get_age(birthday) < 20 THEN 2
+  WHEN get_age(birthday) < 30 THEN 3
+  WHEN get_age(birthday) < 40 THEN 4
+  WHEN get_age(birthday) < 50 THEN 5
+  WHEN get_age(birthday) > 50 THEN 6
+  END
+ORDER BY get_age(birthday) ASC;
+
+
+-- Пользователи от 30 до 50 лет
+SELECT
+  count(1) as count,
+  get_age(p.birthday) as age,
   p.birthday
 FROM users u
   INNER JOIN profiles p ON p.user_id = u.id
-WHERE (YEAR(CURRENT_DATE)-YEAR(p.birthday))-(RIGHT(CURRENT_DATE,5) < RIGHT(p.birthday,5)) >= 30 AND (YEAR(CURRENT_DATE)-YEAR(p.birthday))-(RIGHT(CURRENT_DATE,5) < RIGHT(p.birthday,5)) <=50
+WHERE get_age(p.birthday) <= 50 AND get_age(p.birthday) >= 30
 GROUP BY age
 ORDER BY age ASC;
+
+-- количество пользователей от 30 до 50 лет
+SELECT
+  count(1) as count
+FROM users u
+  INNER JOIN profiles p ON p.user_id = u.id
+WHERE get_age(p.birthday) <= 50 AND get_age(p.birthday) >= 30;
+
+-- количество пользователей женщин от 30 до 50 лет
+SELECT
+  count(1) as count
+FROM users u
+  INNER JOIN profiles p ON p.user_id = u.id
+WHERE get_age(p.birthday) <= 50 AND get_age(p.birthday) >= 30 AND p.gender_id = 2 ;
+
+-- каких пользователей от 30 до 50 лет больше по гендерному типу
+SELECT g.name
+FROM users u
+  INNER JOIN profiles p ON p.user_id = u.id
+  INNER JOIN genders g ON p.gender_id = g.id
+WHERE get_age(p.birthday) <= 50 AND get_age(p.birthday) >= 30
+GROUP BY g.name
+ORDER BY count(1) DESC
+LIMIT 1;
 
 -- Колличество пользователей родившиеся в 1990 году
 SELECT *
@@ -226,7 +290,7 @@ FROM users u
 GROUP BY u.id
 HAVING count(p.user_id) > 1;
 
--- SQL запросы по отелям
+-- SQL ЗАПРОСЫ СВЯЗАННЫЕ С ОТЕЛЕМ
 
 -- Количество отелей по типу
 SELECT count(1) count, ht.name
