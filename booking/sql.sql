@@ -381,10 +381,33 @@ FROM hotels h
   LEFT JOIN comments c ON h.id = c.hotel_id
 WHERE hotel_id = 1;
 
-
 -- Фотографии отеля
 SELECT hp.value, h.name
 FROM hotels h
   LEFT JOIN hotel_photos hp ON h.id = hp.hotel_id
 WHERE hotel_id = 1;
+
+-- Узнать стоимость отеля за указанные даты (период аренды)
+DROP FUNCTION IF EXISTS get_price;
+CREATE FUNCTION  get_price (date_from DATETIME, date_to DATETIME, hotel_id BIGINT)
+  RETURNS DECIMAL DETERMINISTIC
+  BEGIN
+    RETURN ((DATEDIFF(date_to, date_from)) + 1) * (SELECT cost FROM hotels WHERE id = hotel_id);
+  END;
+
+select get_price(DATE('2020-01-01'), DATE('2020-01-10'), 1);
+
+-- Узнать количество заказанных дней у отелей в разрезе по годам и типам отелей
+UPDATE orders SET date_from = date_to, date_to = date_from WHERE date_from > orders.date_to;
+
+SELECT
+  YEAR(o.created_at) as year,
+  os.name, ht.name,
+  SUM(DATEDIFF(o.date_from, o.date_to)) as count_days_ordered,
+  count(DISTINCT(o.hotel_id)) as uniq_count_hotels
+FROM orders o
+  INNER JOIN order_statuses os ON o.status_id = os.id
+  INNER JOIN hotels h ON o.hotel_id = h.id
+  INNER JOIN hotel_types ht ON h.type_id = ht.id
+GROUP BY os.name, ht.name, YEAR(o.created_at);
 
