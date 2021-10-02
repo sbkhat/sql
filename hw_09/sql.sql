@@ -1,8 +1,7 @@
 -- В базе данных shop и sample присутствуют одни и те же таблицы, учебной базы данных.
 -- Переместите запись id = 1 из таблицы shop.users в таблицу sample.users. Используйте транзакции.
-START TRANSACTION;
-  INSERT INTO sample.users (SELECT * FROM shop.users WHERE shop.users.id = 1);
-COMMIT;
+
+INSERT INTO sample.users (SELECT * FROM shop.users WHERE shop.users.id = 1);
 
 -- Создайте представление, которое выводит название name товарной позиции из таблицы products
 -- и соответствующее название каталога name из таблицы catalogs.
@@ -44,7 +43,7 @@ FROM (
            (SELECT 0 t4 UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v
        WHERE selected_date BETWEEN '2018-08-01' AND '2018-08-31'
      ) as cd
-  LEFT JOIN dates d ON DATE_FORMAT(cd.selected_date, '%Y%m%d') = DATE_FORMAT(d.created_at, '%Y%m%d')
+  LEFT JOIN dates d ON DATE_FORMAT(cd.selected_date, '%Y%m%d') = DATE_FORMAT(d.created_at, '%Y%m%d');
 
 -- Пусть имеется любая таблица с календарным полем created_at. Создайте запрос, который удаляет устаревшие записи из таблицы, оставляя только 5 самых свежих записей
 CREATE TABLE test (
