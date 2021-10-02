@@ -128,7 +128,7 @@ CREATE TABLE hotels (
   type_id INTEGER NOT NULL COMMENT 'Идентификатор типа',
   cost DECIMAL NOT NULL COMMENT 'Стоимость за сутки',
   city_id BIGINT NOT NULL COMMENT 'Идентификатор Города',
-  user_id INTEGER NOT NULL COMMENT 'Идентификатор польователя',
+  user_id BIGINT NOT NULL COMMENT 'Идентификатор польователя',
   address TEXT NOT NULL COMMENT 'Адрес',
   status_id INTEGER NOT NULL COMMENT 'Идентификатор статуса',
   created_at DATETIME DEFAULT NOW() COMMENT 'Время создания строки',
@@ -161,23 +161,36 @@ ALTER TABLE hotel_photos ADD CONSTRAINT hotel_photos_hotel_id FOREIGN KEY (hotel
 
 DROP TABLE IF EXISTS order_statuses;
 CREATE TABLE order_statuses (
-  id INTEGER AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR (255) not null
+  id INTEGER AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор строки',
+  name VARCHAR (255) NOT NULL COMMENT 'Идентификатор строки'
 );
 
 DROP TABLE IF EXISTS orders;
 CREATE TABLE orders (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  hotel_id BIGINT NOT NULL,
-  user_id BIGINT NOT NULL,
-  status_id INTEGER NOT NULL,
-  date_from DATE,
-  date_to DATE,
-  comment TEXT,
-  created_at DATETIME DEFAULT NOW(),
-  updated_at DATETIME DEFAULT NOW() ON UPDATE NOW(),
-  cost DECIMAL DEFAULT '0.00'
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор строки',
+  hotel_id BIGINT NOT NULL COMMENT 'Идентификатор отеля',
+  user_id BIGINT NOT NULL COMMENT 'Идентификатор пользователя',
+  status_id INTEGER NOT NULL  COMMENT 'Идентификатор статуса',
+  date_from DATE COMMENT 'С какой даты заказ',
+  date_to DATE COMMENT 'По какую дату заказ',
+  comment TEXT  COMMENT 'Комментарий заказчика',
+  created_at DATETIME DEFAULT NOW() COMMENT 'Время создания строки',
+  updated_at DATETIME DEFAULT NOW() ON UPDATE NOW() COMMENT 'Время обновления строки',
+  cost DECIMAL DEFAULT '0.00' COMMENT 'Стоимость'
 );
 ALTER TABLE orders ADD CONSTRAINT orders_hotel_id FOREIGN KEY (hotel_id) REFERENCES hotels(id);
 ALTER TABLE orders ADD CONSTRAINT orders_user_id FOREIGN KEY (user_id) REFERENCES users(id);
 ALTER TABLE orders ADD CONSTRAINT orders_status_id FOREIGN KEY (status_id) REFERENCES order_statuses(id);
+
+
+DROP TABLE IF EXISTS logs;
+CREATE TABLE logs (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор строки',
+  hotel_id BIGINT NOT NULL COMMENT 'Идентификатор отеля',
+  user_id BIGINT NOT NULL COMMENT 'Идентификатор пользователя',
+  status_id INTEGER NOT NULL  COMMENT 'Идентификатор статуса',
+  created_at DATETIME DEFAULT NOW() COMMENT 'Время создания строки'
+);
+ALTER TABLE logs ADD CONSTRAINT logs_hotel_id FOREIGN KEY (hotel_id) REFERENCES hotels(id);
+ALTER TABLE logs ADD CONSTRAINT logs_user_id FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE logs ADD CONSTRAINT logs_status_id FOREIGN KEY (status_id) REFERENCES order_statuses(id);
