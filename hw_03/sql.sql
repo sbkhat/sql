@@ -43,5 +43,5 @@ FOREIGN KEY (user_id) REFERENCES vk.users(id);
 ALTER TABLE message_groups ADD CONSTRAINT fk_message_groups_group_id
 FOREIGN KEY (group_id) REFERENCES vk.groups(id);
 
-CREATE INDEX user_groups_group_id ON vk.message_groups (group_id);
-CREATE INDEX user_groups_user_id ON vk.message_groups (user_id);
+CREATE INDEX message_groups_group_id ON vk.message_groups (group_id);
+CREATE INDEX message_groups_user_id ON vk.message_groups (user_id);
