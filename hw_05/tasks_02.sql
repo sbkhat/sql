@@ -49,7 +49,9 @@ INSERT INTO new_database.some_table (value) VALUES
   (4),
   (5);
 
-SELECT EXP(
-           SUM(LOG(value))
-       ) as sum
+SELECT ROUND(
+           EXP(
+            SUM(LOG(value))
+          )
+      ) as value
 FROM some_table;
