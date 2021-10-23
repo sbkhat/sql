@@ -11,26 +11,24 @@ ORDER BY count(1) DESC
 ;
 
 -- Подсчитать общее количество лайков, которые получили пользователи младше 10 лет..
-
--- Подсчитать общее количество лайков, которые получили 10 самых молодых пользователей
 SELECT COUNT(id) as sum
 FROM likes
 WHERE user_id IN (
   SELECT * FROM (
-                  SELECT profiles.user_id FROM profiles ORDER BY birthday DESC LIMIT 10
+                  SELECT p.user_id FROM profiles p WHERE
+                    (YEAR(CURRENT_DATE)-YEAR(p.birthday))-(RIGHT(CURRENT_DATE,5) < RIGHT(p.birthday,5)) < 10
                 ) as p
 );
 
-
--- Определить кто больше поставил лайков (всего) - мужчины или женщины?
+-- Определить кто больше поставил лайков (всего): мужчины или женщины.
 SELECT IF(
            (
              SELECT COUNT(1) FROM likes WHERE user_id IN (
-               SELECT id FROM users WHERE gender = 'M'
+               SELECT id FROM users INNER JOIN profiles ON users.id = profiles.user_id WHERE gender = 'M'
              )
            ) > (
              SELECT COUNT(1) FROM likes WHERE user_id IN (
-               SELECT id FROM users WHERE gender = 'F'
+               SELECT id FROM users INNER JOIN profiles ON users.id = profiles.user_id WHERE gender = 'F'
              )
            ),
            'male',
@@ -38,30 +36,20 @@ SELECT IF(
        ) as gender;
 
 
--- Найти 10 пользователей, которые проявляют наименьшую активность в использовании социальной сети.
--- Поиск будет осуществляться по критериям количества лайков и количество постов и сообщений и количеству друзей
--- Один пост, сообщение, друг или лайк считаются за 1 бал.
 SELECT
   (
-    SELECT count(1)
-    FROM likes as l
-    WHERE l.user_id = u.id
-  ) + (
-    SELECT count(1)
-    FROM messages as m
-    WHERE m.from_user_id = u.id
-  ) + (
-    SELECT count(1)
-    FROM posts as p
-    WHERE p.user_id = u.id
-  ) + (
-    SELECT count(1)
-    FROM friendship as f
-    WHERE f.user_id = u.id
-  ) as sum,
-  first_name,
-  last_name,
-  id
-FROM users as u
-ORDER BY sum ASC
-LIMIT 10;
+    SELECT COUNT(1) FROM likes WHERE user_id IN (
+      SELECT id
+      FROM users
+        INNER JOIN profiles ON users.id = profiles.user_id
+      WHERE gender = 'M'
+    )
+  ) as count_male,
+  (
+    SELECT COUNT(1) FROM likes WHERE user_id IN (
+      SELECT id
+      FROM users
+        INNER JOIN profiles ON users.id = profiles.user_id
+      WHERE gender = 'F'
+    )
+  ) as count_female;
