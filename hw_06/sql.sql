@@ -14,10 +14,9 @@ ORDER BY count(1) DESC
 SELECT COUNT(id) as sum
 FROM likes
 WHERE user_id IN (
-  SELECT * FROM (
-                  SELECT p.user_id FROM profiles p WHERE
-                    (YEAR(CURRENT_DATE)-YEAR(p.birthday))-(RIGHT(CURRENT_DATE,5) < RIGHT(p.birthday,5)) < 10
-                ) as p
+    SELECT p.user_id
+    FROM profiles p
+    WHERE (YEAR(CURRENT_DATE)-YEAR(p.birthday))-(RIGHT(CURRENT_DATE,5) < RIGHT(p.birthday,5)) < 10
 );
 
 -- Определить кто больше поставил лайков (всего): мужчины или женщины.
