@@ -113,13 +113,14 @@ CREATE TABLE storehouses_products (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) COMMENT = 'Запасы на складе';
 
-INSERT INTO orders (user_id, created_at, updated_at) VALUES (1, '2021-09-27 13:16:23', '2021-09-27 13:16:26');
-INSERT INTO orders (user_id, created_at, updated_at) VALUES (1, '2021-09-27 13:16:23', '2021-09-27 13:16:26');
-INSERT INTO orders (user_id, created_at, updated_at) VALUES (1, '2021-09-27 13:16:23', '2021-09-27 13:16:26');
-INSERT INTO orders (user_id, created_at, updated_at) VALUES (1, '2021-09-27 13:16:23', '2021-09-27 13:16:26');
-INSERT INTO orders (user_id, created_at, updated_at) VALUES (2, '2021-09-27 13:16:23', '2021-09-27 13:16:26');
-INSERT INTO orders (user_id, created_at, updated_at) VALUES (3, '2021-09-27 13:16:23', '2021-09-27 13:16:26');
-INSERT INTO orders (user_id, created_at, updated_at) VALUES (4, '2021-09-27 13:16:23', '2021-09-27 13:16:26');
+INSERT INTO orders (user_id, created_at, updated_at) VALUES
+  (1, '2021-09-27 13:16:23', '2021-09-27 13:16:26'),
+  (1, '2021-09-27 13:16:23', '2021-09-27 13:16:26'),
+  (1, '2021-09-27 13:16:23', '2021-09-27 13:16:26'),
+  (1, '2021-09-27 13:16:23', '2021-09-27 13:16:26'),
+  (2, '2021-09-27 13:16:23', '2021-09-27 13:16:26'),
+  (3, '2021-09-27 13:16:23', '2021-09-27 13:16:26'),
+  (4, '2021-09-27 13:16:23', '2021-09-27 13:16:26');
 
 
 -- 1.Составьте список пользователей users, которые осуществили хотя бы один заказ orders в интернет магазине.
