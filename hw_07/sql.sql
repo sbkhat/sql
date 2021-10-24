@@ -130,12 +130,19 @@ SELECT
     from users
     where users.id = user_id
   ) as user_name
-from orders
+FROM orders
 GROUP BY user_id;
+
+SELECT *
+FROM users
+WHERE id IN (
+  SELECT DISTINCT (user_id)
+  FROM orders
+);
 
 SELECT u.id, u.name
 FROM users as u
-INNER JOIN orders as o ON u.id = o.user_id
+  INNER JOIN orders as o ON u.id = o.user_id
 GROUP BY user_id;
 
 SELECT DISTINCT(u.id), u.name
@@ -146,7 +153,7 @@ FROM users as u
 
 SELECT p.id, p.name, p.desription, c.name
 FROM products as p
-LEFT JOIN catalogs as c ON p.catalog_id = c.id;
+  LEFT JOIN catalogs as c ON p.catalog_id = c.id;
 
 
 SELECT p.name, p.id, p.desription,
@@ -203,5 +210,5 @@ FROM flights as f;
 
 SELECT f.id, c_from.name as `from`, c_to.name as `to`
 FROM flights as f
-LEFT JOIN cities as c_from ON f.from = c_from.label
-LEFT JOIN cities as c_to ON f.to = c_to.label;
+  LEFT JOIN cities as c_from ON f.from = c_from.label
+  LEFT JOIN cities as c_to ON f.to = c_to.label;
