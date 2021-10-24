@@ -175,11 +175,12 @@ CREATE TABLE flights (
   `to` VARCHAR(255)
 );
 
-INSERT INTO flights (`from`, `to`) VALUES ('moscow', 'omsk');
-INSERT INTO flights (`from`, `to`) VALUES ('novgorod', 'kazan');
-INSERT INTO flights (`from`, `to`) VALUES ('irkutsk', 'moscow');
-INSERT INTO flights (`from`, `to`) VALUES ('omsk', 'irkutsk');
-INSERT INTO flights (`from`, `to`) VALUES ('moscow', 'kazan');
+INSERT INTO flights (`from`, `to`) VALUES
+  ('moscow', 'omsk'),
+  ('novgorod', 'kazan'),
+  ('irkutsk', 'moscow'),
+  ('omsk', 'irkutsk'),
+  ('moscow', 'kazan');
 
 
 DROP TABLE IF EXISTS cities;
@@ -188,11 +189,12 @@ CREATE TABLE cities (
   name VARCHAR(255)
 );
 
-INSERT INTO cities (label, name) VALUES ('moscow', 'москва');
-INSERT INTO cities (label, name) VALUES ('irkutsk', 'иркутск');
-INSERT INTO cities (label, name) VALUES ('novgorod', 'новгород');
-INSERT INTO cities (label, name) VALUES ('kazan', 'казань');
-INSERT INTO cities (label, name) VALUES ('omsk', 'омск');
+INSERT INTO cities (label, name) VALUES
+  ('moscow', 'москва'),
+  ('irkutsk', 'иркутск'),
+  ('novgorod', 'новгород'),
+  ('kazan', 'казань'),
+  ('omsk', 'омск');
 
 SELECT f.id,
   (
